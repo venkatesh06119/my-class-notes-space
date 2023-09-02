@@ -1,0 +1,633 @@
+JENKINS:
+It is a CI/CD TOOL.
+
+CI : CONTINOUS INTEGRATION = CONTINOUS BUILD + CONTINOUS TEST
+ADV: 
+SAVE TIME
+MANUAL WORK WILL BE ELIMINATED
+WE CAN FIND BUGS QUICKLY AND EASILY
+
+CD: CONTINOUS DELIVERY & CONTINOUS DEPLOYMENT
+CDEL : MANUAL PROCESS OF DEPLOYING APP TO PRODUCTION.
+CDEP : AUTOMATION PROCESS OF DEPLOYING APP TO PRODUCTION.
+
+ENVS:
+DEV: DEVELOPERS
+TEST: TESTERS
+UAT: CLIENT
+PROD: END USERS
+
+
+TO DO CI, CDEL OR CDEP WE NEED TO CREATE PIPELINE:
+PIPELINE: STEP BY EXECUTION OF A PROCESS.
+SERIES OF EVENTS INERLINKED WITH EACH OTHER.
+
+DEP -- > CODE + COMPILE + TEST + ARTIFACT
+
+
+JENKINS INTRO:
+
+It is a CI/CD TOOL.
+its an free & open source and platform independent.
+jenkins req java-11.
+it consists lot of plugins.
+intiall jenkins created by sun micro systems in 2004.
+later it was taken by oracel.
+inital name of jenkins is hudson (paid).
+
+SETUP:
+CREATE EC2 WITH PORT 8080
+
+SCRIPT:
+vim jenkins.sh
+
+#STEP-1: INSTALLING GIT JAVA-1.8.0 MAVEN
+yum install git java-1.8.0-openjdk maven -y
+
+#STEP-2: GETTING THE REPO (jenkins.io --> download -- > redhat)
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+#STEP-3: DOWNLOAD JAVA11 AND JENKINS
+amazon-linux-extras install java-openjdk11 -y
+yum install jenkins -y
+update-alternatives --config java
+
+#STEP-4: RESTARTING JENKINS (when we download service it will on stopped state)
+systemctl start jenkins.service
+systemctl status jenkins.service
+
+sh jenkins.sh
+
+=======================
+
+new item -- > cijob -- > freestyle -- > ok
+source code management -- > git -- > https://github.com/devopsbyraham/jenkins-java-project.git -- > build step --> execute shell -- > mvn clean package
+ 
+
+
+HISTORY:
+
+1  vim jenkins.sh
+    2  sh jenkins.sh
+    3  cat /var/lib/jenkins/secrets/initialAdminPassword
+    4  cat jenkins.sh
+    5  sh jenkins.sh
+    6  jenkins -v
+
+
+=================================================================
+
+DAY-02: PARAMETERS, variables
+
+PARAMETERS: we can pass inputs for a job.
+
+1. choice parameter: we can pass single input among multiple.
+
+Dashboard
+job
+Configuration
+This project is parameterized
+add parameter
+choice
+
+2. STRING: Directly we can pass values.
+
+choice vs string: in choice we need to define values but no need in string
+
+3. MULTI LINE STRING: we can pass input in multiple lines.
+
+4. BOOL: True of false.
+5. FILE: we can build local files.
+
+===================================================================
+
+VARIABLES: 
+It will store data
+it will change as per time.
+
+
+1. USER DEFINED: user can define it
+
+A. LOCAL VARS: will work inside the job
+
+job -- > configure -- > build step -- > execute shell
+
+name=raham
+echo "hai all my name is $name, $name is from hyd, $name is working fo NIT"
+
+save -- > build now
+
+B. GLOBAL VARS: will work outside of the job
+
+Manage Jenkins -- > System -- >  Global properties -- > Environment variables
+add -- > Name: name -- > value: raham -- > save
+
+JENKINS ENV VARS:
+Note: user cannot define all variables in jenkins, so we need to use env vars.
+ENV VARS: vars are changing build to build.
+
+job -- > config -- > build step -- > execute shell -- > the list of available environment variables
+
+
+echo "the number of build is $BUILD_NUMBER, the job is $JOB_NAME"
+
+save -- > build now
+
+==========================================================
+
+DAY-03: CRONJOB,POLL SCM, WEBHOOKS, THROTTLE BUILD
+
+CRONJOB: it will do scheduled works. it follows cron syntax
+
+*	: minutes
+*	: hours
+* 	: date
+*	: month
+*	: day (0=sunday, 1=monday -------)
+do ci job -- > Build Triggers -- > Build periodically -- > */1 * 29 7 6 -- > save
+
+DRAWBACK: It will do given work, it will not check changes.
+
+POLL SCM: it will make a build in given time when dev commit the code.
+do ci job -- > Build Triggers -- > Poll SCM -- > */1 * 29 7 6 -- > save
+
+DRAWBACK:
+it need to wait for time period.
+
+
+WEBHOOKS: It will trigger build the moment when dev commit the code.
+
+do ci job -- > Build Triggers -- > GitHub hook trigger for GITScm polling -- > save
+github -- > repo -- > settings -- > webhook -- > add -- > 
+
+Payload URL (jenkins) -- > http://15.188.51.9:8080/github-webhook/
+Content type -- > application/json -- > add webhook
+
+
+THROTTLE BUILD: To restrict the number of builds.
+WHY: to avoid server load.
+
+create a job -- > Throttle builds -- > Number of builds: 3 & Time period: hours -- > save
+
+
+ ====================================================================
+
+LINKEDJOBS: One job is linked with another job.
+if first job is ran then it will trigger second job.
+
+1. create two jobs.
+2. job-one -- > configure -- > Post-build Actions -- > Build other projects -- > two -- > save
+
+types:
+1. up stream:
+2. down stream:
+
+
+TO EXECUTE SHELL COMMANDS:
+Build Steps -- > Execute shell -- > cat /etc/passwd && cat /etc/group -- > save -- > buildnow
+To verify outupt we need to go to console output.
+
+CUSTOMWOKSPACE: we can store the output of jobs in our req location
+create a folder on server
+mkdir raham -- > cd /
+chown jenkins:jenkins /root
+cd /root
+chown jenkins:jenkins raham
+job -- > configure -- > Use custom workspace -- > /root/raham -- > save 
+
+
+Terminate a build if it's stuck: if the task is taking more than expected time we can stop it.
+
+job -- > configure -- > Build Environment -- > Terminate a build if it's stuck -- > Build steps -- > Execute shell -- > 
+touch file3
+sleep 200
+touch abcd.txt
+
+save & build
+
+history:
+ 1  vim jenkins.sh
+    2  sh jenkins.sh 
+    3  cat /proc/cpuinfo 
+    4  cat /etc/passwd
+    5  cd /var/lib/jenkins/workspace/one
+    6  ll
+    7  pwd
+    8  cd
+    9  ll
+   10  rm -rf *
+   11  ll
+   12  cd /tmp/
+   13  ll
+   14  cd /root/
+   15  ll
+   16  mkdir raham
+   17  ll
+   18  cd /
+   19  ll
+   20  chown jenkins:jenkins root/
+   21  ll
+   22  cd /root/
+   23  ll
+   24  chown jenkins:jenkins raham/
+   25  ll
+   26  cd raham/
+   27  ll
+   28  pwd
+   29  history
+===================================================================
+DAY-04:
+
+
+LIMITATIONS OF USING SINGLE NODE:
+1. Load is incresing.
+2. Memory consumption
+3. Delayed outputs
+
+
+JENKINS MASTER & SLAVE:
+1. Master will distribute the work to slaves.
+2. Master and slave communiction will be on ssh.
+3. Master will assign job to slave by using labels.
+
+
+STEUP:
+1. Create a slave node and install java-11(agent)
+amazon-linux-extras install java-openjdk11 -y
+
+Note: without java-11 on woker node slave will not work.
+
+2. Dashboard -- > Manage Jenkins -- > Nodes and Clouds --- > new node -- > create -- > name: worker-1 -- > Permanent Agent -- > create -- > 
+
+Number of executors	: number of builds parallely
+Remote root directory	: /tmp
+Labels			: raham
+usage			: last opt
+Launch method		: last opt
+Host			: private ip of slave
+Credentials 		: add -- > Kind: ssh username with private key (user: ec2-user & Private Key -- > Enter directly -- > ADD -- > enter pem file)
+Host Key Verification Strategy : last opt -- > save
+
+
+CREATE A CI JOB -- > CONFIGURE -- > Restrict where this project can be run -- > Label Expression
+raham -- > save 
+
+
+NOTE: If build failed install the packages
+yum install git java-1.8.0-openjdk maven -y
+
+================================================
+
+DAY-06: PIPELINE, PORT NUMBER AND PASSWORDLESS LOGIN
+
+
+PIPELINE: STEP BY EXECUTION OF A PROCESS.
+SERIES OF EVENTS INERLINKED WITH EACH OTHER.
+FOR PIPELINE WE WILL USE GROOVY SYNTAX.
+
+TYPES:
+1. SCRIPTED (EASY)
+2. DECLARAVTIVE (COMPLEX)
+
+
+SCRIPTED:
+
+node {
+    stage('stage-1') {
+        sh 'touch file1'
+    }
+}
+
+DECLARATIVE:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('stage-1') {
+            steps {
+                sh 'touch file2'
+            }
+        }
+    }
+}
+
+PASSS:
+P: pipeline
+A: agent
+S: stages
+S: stage
+S: steps
+
+DIFFERENCES:
+Scripted start with node, declaratvie start with pipeline.
+scripted will not have stages, but declarative we have stages.
+scrtpted will not have steps, but declarative we have steps.
+scripted is less length, declartive is more.
+
+SINGLE STAGE PIPELINE: It will have only one stage in pipeline.
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('stage-1') {
+            steps {
+                sh 'touch file2'
+            }
+        }
+    }
+}
+
+
+MULTI STAGE PIPELINE: It will have more than one stage in pipeline.
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('one') {
+            steps {
+                sh 'cat /etc/passwd'
+            }
+        }
+        stage('two') {
+            steps {
+                sh 'cat /etc/group'
+            }
+        }
+        stage('three') {
+            steps {
+                sh 'touch file3'
+            }
+        }
+    }
+}
+
+PIPELINE AS A CODE: Executing multiple actions/commands on a single stage.
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('abc') {
+            steps {
+                sh 'cat /etc/passwd'
+                sh 'cat /etc/group'
+                sh 'touch file1'
+            }
+        }
+    }
+}
+
+
+PIPELINE AS A CODE SINGLE SHELL/LINE: Executing multiple actions/commands on a single stage With single shell.
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('abc') {
+            steps {
+                sh '''
+                cat /etc/passwd
+                cat /etc/group
+                touch file5
+                '''
+            }
+        }
+    }
+}
+
+CI USING PIPELINE:
+
+pipeline sytax -- > sample step : git -- > repository: https://github.com/devopsbyraham/jenkins-java-project.git -- > branch: master -- > generete pipeline script
+
+
+
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/devopsbyraham/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+}
+
+
+
+VARIBALES ON PILEINE:
+
+pipeline {
+    agent any 
+    environment {
+        name = 'raham'
+        loc = 'hyd'
+        c = 'nareshit'
+    }
+    
+    stages {
+        stage('one') {
+            steps {
+              echo "im $name, $name is working for $c, $name is from $loc"  
+            }
+        }
+    }
+}
+
+
+PASSWORD LESS LOGIN:
+
+cd /var/lib/jenkins/
+vim config.xml  -- > line 7 -- > true=false -- > save
+systemctl restart jenkins.service
+
+CHANGING PORT NUMBER:
+
+cd /usr/lib/systemd/system
+vim jenkins.service -- > line 67 -- > 8080=8082 -- > save
+systemctl daemon-reload
+systemctl restart jenkins.service
+
+HISTORY:
+
+    1  cd /var/lib/jenkins/workspace/pipeline
+    2  ls
+    3  rm -rf *
+    4  ll
+    5  cd /var/lib/jenkins/
+    6  ll
+    7  vim config.xml
+    8  systemctl restart jenkins.service
+    9  vim config.xml
+   10  systemctl restart jenkins.service
+   11  cd /
+   12  ll
+   13  cd /usr/lib/systemd/system
+   14  ll
+   15  pwd
+   16  vim jenkins.service
+   17  systemctl daemon-reload
+   18  systemctl restart jenkins.service
+   19  history
+================================================
+
+POST BUILD ACTIONS: Actions that are performed after the build.
+
+1. success: it will trigger when build is succesful only.
+2. failure: it will trigger when build is failed only.
+3. always: it will trigger when build if it is succesful or failure.
+
+
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('one') {
+            steps {
+               git 'https://github.com/devopsbyraham/jenkins-java-project.git' 
+            }
+        }
+        stage('artifact') {
+            steps {
+               sh 'mvn clean package'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'my artifact file is generated'
+        }
+    }
+}
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}
+
+
+INPUT PARAMETER: It will trigger the build when we pass input on runtime for a stage.
+
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/devopsbyraham/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            input {
+                message "do you want to continue"
+                ok "yes"
+            }
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+}
+
+
+PARAMETERS ON PIPELINE:
+OPTINAL
+
+
+RBAC: ROLE BASED ACCESS CONTROL
+WHY: TO RESTRIC THE USERS.
+
+S-1: CREATE 2 USERS
+Dashboard -- > Manage Jenkins -- > security -- > users 
+
+S-2: DOWNLOAD A PLUGIN 
+Dashboard -- > Manage Jenkins -- > PLUGINS -- > Available -- > Role-based Authorization Strategy -- > downnload -- > go back to top page
+
+s-3: Creating ROLES
+Dashboard -- > Manage Jenkins -- > security -- > Authorization -- > Role-based  Strategy -- > save
+
+manager / create roles -- > Manage roles -- > fresher -- > add -- > exeperince -- > add
+fresher: overall -- > read & job -- > read
+experince: administrator
+
+S-4: ATTACH ROLES
+ASSIGN ROLES: ADD USER -- > NAME -- > SELECT ROLES -- > SAVE
+
+ 
+PRACTISE THIS ON ANOTHER BROWSER.
+
+NOTE:
+1. FOR A SINGLE ROLE WE CAN ATTACH MULTIPLE USERS.
+2. PERMISSIONS WILL BE GIVEN TO ROLE NOT FOR USERS.
+
+==========================================
+BLUE OCEAN: It is used to enhnace the jenkins dashboard and pipleine creations.
+
+REMOTE TRIGGERING: Run a build from remote location.
+Build Triggers -- > Trigger builds remotely -- > Authentication Token
+
+
+
+PROJECT HISTORY:
+SLAVE:
+
+
+    1  amazon-linux-extras install java-openjdk11 -y
+    2  wget
+    3  wget http://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz
+    4  ll
+    5  tar -zxvf apache-tomcat-9.0.78.tar.gz
+    6  cd apache-tomcat-9.0.78/
+    7  ll
+    8  vim webapps/manager/META-INF/context.xml
+    9  vim conf/tomcat-user.xml
+   10  vim conf/tomcat-users.xml
+   11  ./bin/startup.sh
+   12  git -v
+   13  maven -v
+   14  yum install git java-1.8.0-openjkd maven -y
+   15  mvn -version
+   16  update-alternatives --config java
+   17  java -version
+   18  yum install java-1.8.0-openjdk -y
+   19  update-alternatives --config java
+   20  mvn -version
+   21  yum remove maven* java* -y
+   22  java -version
+   23  mvn --version
+   24  yum install java-1.8.0-openjdk maven -y
+   25  mvn --version
+   26  amazon-linux-extras install java-openjkd11 -y
+   27  amazon-linux-extras install java-openjdk11 -y
+   28  history
