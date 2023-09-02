@@ -1,0 +1,922 @@
+ANSIBLE: 
+ITs an free & open-source automation tool.
+what: software installation, server creation, deployment
+
+year: 2012 
+invented by: maichel dehaan
+lang: yaml (yet another markup language)
+depenedncy: python
+owned: redhat
+
+ANSIBLE ARCHITECTURE COMPONENTS:
+
+ANSIBLE SERVER: it will connect with worker nodes and do the work.
+CONNECTION: SSH 
+INVENTORY FILE: It will store ip address of worker node.
+PLAYBOOK: It stores the code.
+
+SETUP:
+CREATE 5 SERVERS (1=ANSIBLE, 2=DEV, 2 TEST)
+
+ALL SERVERS:
+hostnamectl set-hostname ansible/dev-1/dev-2/test-1/test-2
+sudo -i
+passwd root
+vim /etc/ssh/sshd_config (38 uncomment, 63 no=yes)
+systemctl restart sshd
+systemctl status sshd
+hostname -i
+
+ANSIBLE:
+amazon-linux-extras install ansible2 -y
+yum install python3 python-dlevel python-pip -y
+vim /etc/ansible/hosts
+
+TO ESTABLISH THE CONNECTION WE NEED TO COPY KEYS FOR ANSIBLE TO WORKER NODE.
+ssh-keygen -- > enter -- > enter -- > enter 
+ssh-copy-id root@PRIVATE-IP OF WORKERNODE
+yes -- > password -- > ssh PRIVATE-IP OF WORKERNODE -- > ctrl d
+
+do the same process for all nodes.
+TO VERIFY: ansible -m ping all
+
+
+TO WORK WITH ANSIBLE WE CAN DO IT ON 3 WAYS:
+
+1. ADHOC COMMANDS:
+These are simple linux commands.
+we use it for only one time.
+these commands will be overrided.
+
+
+ansible all -a "yum install maven -y"
+
+ansible: cli tool
+all: all servers
+-a: arguments 
+yum install maven -y: linux command
+
+ansible all -a "yum install maven -y"
+ansible all -a "touch file1"
+ansible all -a "mkdir raham"
+ansible all -a "yum install httpd -y"
+ansible all -a "systemctl restart httpd"
+ansible all -a "systemctl status httpd"
+ansible all -a "cat /etc/passwd"
+ansible all -a "cat /etc/passwd"
+
+
+TROUBLESHOOT FOR CONNECTION REFUES:
+1. cd /root/.ssh/
+remove all files (rm -f *)
+generate the key and copy
+
+
+HISTORY:
+ 1  passwd root
+    2  vim /etc/ssh/sshd-config
+    3  vim /etc/ssh/sshd_config
+    4  systemctl restart sshd
+    5  systemctl status sshd
+    6  hostname -i
+    7  amazon-linux-extras install ansible2 -y
+    8  yum install python3 python-dlevel python-pip -y
+    9  vim /etc/ansible/
+   10  vim /etc/ansible/hosts
+   11  ssh-keygen
+   12  ssh-copy-id root@172.31.27.53
+   13  ssh 172.31.27.53
+   14  ssh-copy-id root@172.31.20.145
+   15  ssh 172.31.20.145
+   16  ssh-copy-id root@172.31.24.200
+   17  ssh 172.31.24.200
+   18  ssh-copy-id root@172.31.28.249
+   19  ssh
+   20  ssh 172.31.28.249
+   21  ansible -m ping all
+   22  ansible all -a "yum install git -y"
+   23  ansible all -a "yum install maven -y"
+   24  ansible all -a "mvn -version"
+   25  ansible all -a "touch file1"
+   26  ansible all -a "ls"
+   27  ansible all -a "mkdir raham"
+   28  ansible all -a "ls"
+   29  ansible all -a "yum install httpd -y"
+   30  ansible all -a "systemctl start httpd"
+   31  ansible all -a "systemctl status httpd"
+   32  ansible all -a "cat /etc/passwd"
+   33  ansible all -a "useradd raham"
+   34  ansible all -a "cat /etc/passwd"
+   35  history
+
+=================================================================================
+DAY-02:
+
+MODULES:
+In ansible modules are used advancement of adhoc.
+modules will be on key-value pair.
+key-value pair is also called as dictionary.
+
+ansible all -a "yum install git -y"
+ansible all -m yum -a "name=git state=present"
+
+
+ansible all -a "yum install maven -y"
+ansible all -m yum -a "name=maven state=present"  (present=installing)
+ansible all -m yum -a "name=maven state=absent"   (absent=uninstalling)
+ansible all -m yum -a "name=maven state=latest"   (latest=update)
+ansible all -m yum -a "name=httpd state=present"
+ansible all -m yum -a "pkg=httpd state=present"
+ansible all -m service -a "name=httpd state=started"
+ansible all -m service -a "name=httpd state=restarted"
+ansible all -m service -a "name=httpd state=stop"
+ansible all -m user -a "name=prakash state=present"
+ansible all -m copy -a "src=raham.txt dest=/tmp"
+
+
+PLAYBOOK:
+Its a collection of modules.
+we can reuse the modules multiple times.
+we can execute the multiple modules at a time.
+
+HOW TO WRITE:
+To write the playbook we need to use YAML.
+YAML= YET ANOTHER MARKUP LANGUAGES
+extension for yaml is (.yml or .yaml)
+it works on key-value pair.
+playbook start with a list.
+we need to follow indentation.
+
+
+
+
+ansible all -a "yum install maven -y"
+ansible all -m yum -a "name=maven state=present"  
+
+- hosts: all
+  tasks:
+    - name: install git
+      yum: name=git state=present
+
+
+ansible-playobbk playbook1.yml
+NOTE: REmove pakage after installing
+
+
+play: in how many servers its executing
+Gathering_facts: it is default taks (gether info from worker nodes)
+ok: how many tasks perfomed
+changed: how many taks perfomed by user
+
+
+MULTI-TASK PLAYBOOK:
+
+- hosts: all
+  tasks:
+    - name: install git
+      yum: name=git state=present
+    - name: installing maven
+      yum: name=maven state=present
+
+ansible-playobbk playbook1.yml
+
+sed: %s/present/absent/  (to replace present with absent)
+
+- hosts: all
+  tasks:
+    - name: install git
+      yum: name=git state=absent
+    - name: installing maven
+      yum: name=maven state=absent
+
+==================================================
+
+USING MULTI MODULES:
+
+- hosts: all
+  tasks:
+    - name: install git
+      yum: name=git state=present
+    - name: installing maven
+      yum: name=maven state=present
+    - name: install httpd
+      yum: name=httpd state=present
+    - name: startiing httpd
+      service: name=httpd state=started
+    - name: craete user
+      user: name=krishna state=present
+
+
+TAGS: 
+We can execute a specif tasks & we can skip the specific tasks.
+
+
+- hosts: all
+  tasks:
+    - name: install git
+      yum: name=git state=present
+      tags: a
+    - name: installing maven
+      yum: name=maven state=present
+      tags: b
+    - name: install httpd
+      yum: name=httpd state=present
+      tags: c
+    - name: startiing httpd
+      service: name=httpd state=started
+      tags: d
+    - name: craete user
+      user: name=krishna state=present
+      tags: raham
+
+
+TO EXECUT SPECIFC TASKS:
+
+single tag: ansible-playbook playbook1.yml --tags a
+multi tags: ansible-playbook playbook1.yml --tags b,raham
+
+
+TO SKIP TAGS SINGLE OR MULTI
+
+- hosts: all
+  tasks:
+    - name: install git
+      yum: name=git state=absent
+      tags: a
+    - name: installing maven
+      yum: name=maven state=absent
+      tags: b
+    - name: install httpd
+      yum: name=httpd state=absent
+      tags: c
+    - name: startiing httpd
+      service: name=httpd state=started
+      tags: d
+    - name: craete user
+      user: name=krishna state=absent
+      tags: raham
+
+
+single tag: ansible-playbook playbook1.yml --skip-tags "d"
+multi tags: ansible-playbook playbook1.yml --skip-tags "d,raham"
+
+HISTORY:
+ 37  sudo -i
+   38  ansible all -a "git -v"
+   39  ansible all -m ping
+   40  ssh-copy-id root@172.31.27.53
+   41  ssh-copy-id root@172.31.20.145
+   42  ssh-copy-id root@172.31.24.200
+   43  cd .ssh/
+   44  cat known_hosts
+   45  cd
+   46  ansible all -m ping
+   47  ssh-copy-id root@172.31.24.200
+   48  cd .ssh/
+   49  vim known_hosts
+   50  ssh-copy-id root@172.31.24.200
+   51  ll
+   52  cat known_hosts
+   53  rm -rf *
+   54  ll
+   55  ssh-keygen
+   56  ssh-copy-id root@172.31.27.53
+   57  ssh
+   58  ssh 172.31.27.53
+   59  ssh-copy-id root@172.31.20.145
+   60  ssh-copy-id root@172.31.24.200
+   61  cd
+   62  ssh-copy-id root@172.31.28.249
+   63  ssh-copy-id root@172.31.24.200
+   64  ssh-copy-id root@172.31.28.249
+   65  ansible -m ping all
+   66  ansible all -a "yum remove git* maven* httpd* -y"
+   67  ansible all -m yum -a "name=git state=present"
+   68  ansible all -m yum -a "name=maven state=present"
+   69  ansible all -m yum -a "name=maven state=absent"
+   70  cd
+   71  ansible all -m yum -a "name=maven state=present"
+   72  ansible all -m yum -a "name=maven state=latest"
+   73  ansible all -m yum -a "name=httpd state=present"
+   74  ansible all -m yum -a "name=httpd state=started"
+   75  ansible all -m service -a "name=httpd state=started"
+   76  ansible all -m service -a "name=httpd state=restarted"
+   77  ansible all -m service -a "name=httpd state=stopped"
+   78  ansible all -m service -a "name=httpd state=restarted"
+   79  ansible all -m user -a "name=prakash state=present"
+   80  vim raham.txt
+   81  ll
+   82  ansible all -m copy -a "src=raham.txt dest=/tmp"
+   83  rm -rf *
+   84  vim playbook1.yml
+   85  ansible all -a "yum remove git* maven* httpd* -y"
+   86  cat playbook1.yml
+   87  ansible-playbook playbook1.yml
+   88  ansible all -a "yum remove git* -y"
+   89  vim playbook1.yml
+   90  ansible-playbook playbook1.yml
+   91  vim playbook1.yml
+   92  ansible-playbook playbook1.yml
+   93  vim playbook1.yml
+   94  ansible-playbook playbook1.yml
+   95  vim playbook1.yml
+   96  ansible-playbook playbook1.yml
+   97  vim playbook1.yml
+   98  cat playbook1.yml
+   99  ansible-playbook playbook1.yml --tags b
+  100  ansible-playbook playbook1.yml --tags raham
+  101  ansible-playbook playbook1.yml --tags a
+  102  ansible-playbook playbook1.yml --tags c,d
+  103  vim playbook1.yml
+  104  ansible-playbook playbook1.yml --skip-tags "d"
+
+=============================================
+
+DAY-03:
+
+Shell vs Command vs Raw module:
+
+these modules doesnt req key value pair.
+these will execute linux commands directly.
+
+raw > command > shell
+
+
+- hosts: dev
+  tasks:
+    - name: installing git
+      yum: name=git state=present
+
+    - name: install maven
+      shell: yum install maven -y
+
+    - name: install apache
+      command: yum install httpd -y
+
+    - name: install tree
+      raw: yum install tree -y
+
+NOTE: Pls remove the installed packages
+
+
+LOOPS: To do the work repetedly.
+
+- hosts: dev
+  tasks:
+    - name: installing pks
+      yum: name={{item}} state=present
+      with_items:
+        - git
+        - maven
+        - httpd
+        - tree
+
+NOTE: Pls remove the installed packages
+
+- hosts: dev
+  tasks:
+    - name: creating users
+      user: name={{item}} state=present
+      with_items:
+        - srikar
+        - venky
+        - yogesh
+        - reviii
+NOTE: Pls remove the users 
+
+we can use this to work with files and folders
+
+
+VARIABLES:
+1. STATIC: Defines inside the playbook
+2. DYNAMIC: Defines outside the playbook
+
+
+STAIC:
+
+- hosts: dev
+  vars:
+    a: tree
+    b: maven
+  tasks:
+    - name: installing pkgs
+      yum: name={{a}} state=present
+    - name: abcd
+      yum: name={{b}} state=present
+
+
+DYNAMIC:
+- hosts: dev
+  tasks:
+    - name: installing pkgs
+      yum: name={{a}} state=present
+
+ansible-playbook playbook1.yml --extra-vars "a=httpd"
+
+- hosts: dev
+  tasks:
+    - name: installing pkgs
+      yum: name={{a}} state=present
+      yum: name={{b}} state=present
+ansible-playbook playbook1.yml --extra-vars "a=docker b=java-1.8.0-openjdk"
+
+
+
+Handlers: 
+we use handlers when one task is depending on another task.
+fisrt task will executed and ask for second task to execute.
+
+
+- hosts: dev
+  tasks:
+    - name: installing httpd
+      yum: name=httpd state=present
+      notify: restart httpd
+
+  handlers:
+    - name: restart httpd
+      service: name=httpd state=restarted
+
+HISTORY:
+
+ 107  vim playbook1.yml
+  108  ansible -m ping all
+  109  vim playbook1.yml
+  110  ansible-playbook playbook1.yml
+  111  vim playbook1.yml
+  112  vi playbook1.yml
+  113  ansible-playbook playbook1.yml
+  114  vim playbook1.yml
+  115  ansible-playbook playbook1.yml
+  116  vim playbook1.yml
+  117  ansible-playbook playbook1.yml
+  118  ansible dev -a "mvn -version"
+  119  ansible dev -a "httpd -v"
+  120  vim playbook1.yml
+  121  ansible-playbook playbook1.yml
+  122  ansible dev -a "cat /etc/passwd"
+  123  vim playbook1.yml
+  124  ansible-playbook playbook1.yml
+  125  ansible dev -a "cat /etc/passwd"
+  126  vim playbook1.yml
+  127  ansible-playbook playbook1.yml  --extra-vars "a=git"
+  128  ansible all -a "git -v"
+  129  ansible all -a "httpd -v"
+  130  ansible-playbook playbook1.yml --exta-vars "a=httpd"
+  131  ansible-playbook playbook1.yml --extra-vars "a=httpd"
+  132  vim playbook1.yml
+  133  cat playbook1.yml
+  134  ansible-playbook playbook1.yml --extra-vars "a=maven b=tree"
+  135  ansible dev -a "mvn -version"
+  136  ansible dev -a "mvn --version"
+  137  ansible dev -a "tree --version"
+  138  ansible-playbook playbook1.yml --extra-vars "a=maven, b=tree"
+  139  ansible dev -a "mvn --version"
+  140  ansible dev -a "mvn -version"
+  141  ansible-playbook playbook1.yml --extra-vars "a=docker, b=java-1.8.0-openjdk"
+  142  ansible dev -a "docker -v"
+  143  ansible dev -a "java -version"
+  144  vim playbook1.yml
+  145  ansible dev -a "yum remove git* maven* httpd* docker* tree* java* -y"
+  146  ansible-playbook playbook1.yml --extra-vars "a=docker, b=java-1.8.0-openjdk"
+  147  ansible-playbook playbook1.yml --extra-vars "a=docker b=java-1.8.0-openjdk"
+  148*
+  149  ansible dev -a "docker -v"
+  150  vim playbook1.yml
+  151  ansible-playbook playbook1.yml
+  152  ansible dev -a "tree -v"
+  153  ansible dev -a "mvn -version"
+  154  vim playbook1.yml
+  155  ansible dev -a "httpd -v"
+  156  ansible-playbook playbook1.yml --extra-vars "a=httpd"
+  157  ansible dev -a "docker -v"
+  158  ansible dev -a "httpd -v"
+  159  vim playbook1.yml
+  160  ansible dev -a "yum remove git* maven* -y"
+  161  ansible dev -a "git -v"
+  162  ansible dev -a "maven -version"
+  163  ansible dev -a "mvn-version"
+  164  ansible dev -a "mvn -version"
+  165  ansible-playbook playbook1.yml --extra-vars "a=maven"
+  166  ansible dev -a "mvn -version"
+  167  ansible dev -a "git -v"
+  168  vim playbook1.yml
+  169  ansible-playbook "yum remove tree* -y"
+  170  ansible dev -a "yum remove tree* -y"
+  171  ansible-playbook playbook1.yml --extra-vars "a=maven"
+  172  vim playbook1.yml
+  173  ansible dev -a "mvn -version"
+  174  ansible dev -a "tree -v"
+  175  vim playbook1.yml
+  176  ansible-playbook playbook1.yml
+  177  vim playbook1.yml
+  178  ansible-playbook playbook1.yml
+  179  ansible dev -a "yum remove httpd* -y"
+  180  ansible-playbook playbook1.yml
+  181  vim playbook1.yml
+  182  history
+
+===========================================
+
+HOMOGENIUS CLUSTER: All nodes are same os and flavour
+HETROGENIUS CLUSTER: All nodes are not same os and flavour
+
+Redhat: yum install git -y
+Ubuntu: apt install git -y
+
+Conditions: we use the conditions to work with hetrogenius clusters mostly.
+
+- hosts: test
+  tasks:
+    - name: Installing git on RedHat
+      raw: yum install git -y
+      when: ansible_os_family == "RedHat"
+
+    - name: Instlling git on ubuntu
+      raw: apt install git -y
+      when: ansible_os_family == "Debian"
+
+
+- hosts: test
+  tasks:
+    - name: Installing tree on RedHat
+      raw: yum install tree -y
+      when: ansible_os_family == "RedHat"
+
+    - name: Instlling tree on ubuntu
+      raw: apt install tree -y
+      when: ansible_os_family == "Debian"
+
+
+SETUP MODULE: To show the complete info about worker node.
+ansible -m setup test[0]
+ansible -m setup test[0] | grep -i family
+
+ROLES: 
+Its the way of managing the playbooks.
+we create roles for individual works.
+we can divide the playbook in folders.
+we can reduce length of playbook.
+data will be encapsulated here.
+
+mkdir playbooks
+cd playbooks/
+mkdir -p roles/one/tasks
+mkdir -p roles/two/tasks
+mkdir -p roles/three/tasks
+
+
+vim roles/one/tasks/main.yml
+
+- name: Installing git 
+  raw: yum install git -y
+
+
+vim roles/two/tasks/main.yml
+
+- name: Installing httpd 
+  raw: yum install httpd -y
+
+vim roles/three/tasks/main.yml
+
+- name: create users
+  user: name={{item}} state=present
+  with_items:
+    - siva
+    - abcd
+    - jhony
+    - saurabh
+    - asim
+
+vim master.yml
+- hosts: test
+  roles:
+    - one
+
+
+ANSIBLE-VALUT:
+It will encrypt the data in file/playbook.
+AES256 is the technique used by this valut.
+in real time we keep user credentials.
+we need to give password for the vault.
+Note: we can restrict the user also.
+
+
+ansible-vault create creds.txt	: to create a vault
+ansible-vault edit creds.txt	: to edit a vault
+ansible-vault rekey creds.txt	: to change password for vault
+ansible-vault decrypt creds.txt	: to decrypt a vault
+ansible-vault encrypt creds.txt	: to encrypt a vault
+ansible-vault view creds.txt	: to show the content but not decrypt
+
+
+STRTAGIES: its a way of executing tasks on hosts.
+1. Default/Linear
+2. Free
+
+by default ansible will use default/Linear startegy.
+when  we use defult some times task-1 will block task-2
+to avoid this we use free strategy which executes task-2 if task-1 is on pending or blocked.
+
+JINJA-2 TEMPLATE: We use this for customized output.
+
+DEBUG MODULE: It is used to print words or msgs from the playbook.
+
+
+- hosts: test[0]
+  tasks:
+    - debug:
+        msg: "hai all my name is raham"
+
+
+LOOKUPS: It will retrive the data form files,db ---
+
+vim creds.txt
+user=raham
+
+- hosts: dev
+  vars:
+    a: "{{lookup('file', '/root/creds.txt') }}"
+  tasks:
+    - debug:
+        msg: "hai my user name is {{a}}"
+
+
+history:
+
+ 182  vim playbook1.yml
+  183  ansible-playbook playbook1.yml
+  184  ansible -m setup test[0]
+  185  ansible -m setup test[0] | grep -i family
+  186  vim playbook1.yml
+  187  ansible-playbook playbook1.yml
+  188  vim playbook1.yml
+  189  cat /etc/os-release
+  190  uname -a
+  191  uname -r
+  192  rm -rf *
+  193  ll
+  194  mkdir playbooks
+  195  cd playbooks/
+  196  mkdir -p roles/one/tasks
+  197  mkdir -p roles/two/tasks
+  198  vim roles/one/tasks/main.yml
+  199  vim roles/two/tasks/main.yml
+  200  vim master.yml
+  201  ansible-playbook master.yml
+  202  mkdir -p roles/three/tasks
+  203  vim roles/three/tasks/main.yml
+  204  vim master.yml
+  205  ansible-playbook master.yml
+  206  vim roles/three/tasks/main.yml
+  207  vim roles/two/tasks/main.yml
+  208  vim roles/one/tasks/main.yml
+  209  vim master.yml
+  210  ansible-playbook master.yml
+  211  ansible all -a "yum remove git* -y"
+  212  vim creds.txt
+  213  cat creds.txt
+  214  rm -rf *
+  215  ansible-vault create creds.txt
+  216  cat creds.txt
+  217  ansible-vault edit creds.txt
+  218  cat creds.txt
+  219  ansible-vault rekey creds.txt
+  220  ansible-vault decrypt creds.txt
+  221  cat creds.txt
+  222  ansible-vault encrypt creds.txt
+  223  cat creds.txt
+  224  ansible-vault show creds.txt
+  225  cat creds.txt
+  226  ansible-vault view creds.txt
+  227  cat creds.txt
+  228  cd
+  229  ll
+  230  rm -rf *
+  231  vim playbook.yml
+  232  ll
+  233  ansible-vault encrypt playbook.yml
+  234  ansible-playbook playbook.yml
+  235  cat playbook.yml
+  236  vim playbook1.yml
+  237  ansible-playbook playbook1.yml
+  238  vim playbook1.yml
+  239  ansible-playbook playbook1.yml
+  240  vim playbook1.yml
+  241  rm -rf playbook.yml
+  242  vim creds.txt
+  243  cat creds.txt
+  244  vim playbook1.yml
+  245  ansible-playbook playbook1.yml
+  246  vim playbook1.yml
+
+======================================================
+
+REPO: https://github.com/RAHAMSHAIK007/all-setups.git
+
+NETFLIX PROJECT:
+
+- hosts: test
+  tasks:
+    - name: installing apache server
+      yum: name=httpd state=present
+
+    - name: activating apache server
+      service: name=httpd state=started
+
+    - name: installing git
+      yum: name=git state=present
+
+    - name: git checkout
+      git:
+        repo: "https://github.com/CleverProgrammers/pwj-netflix-clone.git"
+        dest: "/var/www/html"
+
+TOMCAT SETUP:
+
+- hosts: dev
+  tasks:
+    - name: download tomcat from dlcdn
+      get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz"
+        dest: "/root/"
+
+    - name: untar the apache file
+      command: tar -zxvf apache-tomcat-9.0.78.tar.gz
+        #unarchive:
+        #src: "apache-tomcat-9.0.76.tar.gz"
+        #dest: "/root/"
+
+    - name: rename the tomcat
+      command: mv apache-tomcat-9.0.78 tomcat
+      tags: abc
+
+    - name: install java
+      command: yum install java-1.8.0-openjdk -y
+
+    - name: setting the roles in tomcat-user.xml file
+      template:
+        src: tomcat-users.xml
+        dest: /root/tomcat/conf/tomcat-users.xml
+
+    - name: delete two lines in context.xml
+      template:
+        src: context.xml
+        dest: /root/tomcat/webapps/manager/META-INF/context.xml
+
+    - name: start the tomcat
+      shell: nohup /root/tomcat/bin/startup.sh
+
+tomcat-users.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+<!--
+  By default, no user is included in the "manager-gui" role required
+  to operate the "/manager/html" web application.  If you wish to use this app,
+  you must define such a user - the username and password are arbitrary.
+
+  Built-in Tomcat manager roles:
+    - manager-gui    - allows access to the HTML GUI and the status pages
+    - manager-script - allows access to the HTTP API and the status pages
+    - manager-jmx    - allows access to the JMX proxy and the status pages
+    - manager-status - allows access to the status pages only
+
+  The users below are wrapped in a comment and are therefore ignored. If you
+  wish to configure one or more of these users for use with the manager web
+  application, do not forget to remove the <!.. ..> that surrounds them. You
+  will also need to set the passwords to something appropriate.
+-->
+<!--
+  <user username="admin" password="<must-be-changed>" roles="manager-gui"/>
+  <user username="robot" password="<must-be-changed>" roles="manager-script"/>
+-->
+<!--
+  The sample user and role entries below are intended for use with the
+  examples web application. They are wrapped in a comment and thus are ignored
+  when reading this file. If you wish to configure these users for use with the
+  examples web application, do not forget to remove the <!.. ..> that surrounds
+  them. You will also need to set the passwords to something appropriate.
+-->
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+  <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+  <user username="role1" password="<must-be-changed>" roles="role1"/>
+-->
+  <role rolename="manager-gui"/>
+  <role rolename="manager-script"/>
+  <user username="tomcat" password="raham123" roles="manager-gui, manager-script"/>
+
+
+context.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+<!--
+  By default, no user is included in the "manager-gui" role required
+  to operate the "/manager/html" web application.  If you wish to use this app,
+  you must define such a user - the username and password are arbitrary.
+
+  Built-in Tomcat manager roles:
+    - manager-gui    - allows access to the HTML GUI and the status pages
+    - manager-script - allows access to the HTTP API and the status pages
+    - manager-jmx    - allows access to the JMX proxy and the status pages
+    - manager-status - allows access to the status pages only
+
+  The users below are wrapped in a comment and are therefore ignored. If you
+  wish to configure one or more of these users for use with the manager web
+  application, do not forget to remove the <!.. ..> that surrounds them. You
+  will also need to set the passwords to something appropriate.
+-->
+<!--
+  <user username="admin" password="<must-be-changed>" roles="manager-gui"/>
+  <user username="robot" password="<must-be-changed>" roles="manager-script"/>
+-->
+<!--
+  The sample user and role entries below are intended for use with the
+  examples web application. They are wrapped in a comment and thus are ignored
+  when reading this file. If you wish to configure these users for use with the
+  examples web application, do not forget to remove the <!.. ..> that surrounds
+  them. You will also need to set the passwords to something appropriate.
+-->
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+  <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+  <user username="role1" password="<must-be-changed>" roles="role1"/>
+-->
+  <role rolename="manager-gui"/>
+  <role rolename="manager-script"/>
+  <user username="tomcat" password="raham123" roles="manager-gui, manager-script"/>
+
+
+
+ASYNC AND POLLING: 
+
+- hosts: test
+  tasks:
+    - name: installing apache server
+      command: sleep 30
+      async: 20
+      poll: 10
+
+    - name: activating apache server
+      service: name=httpd state=started
+
+    - name: installing git
+      yum: name=git state=present
+
+    - name: git checkout
+      git:
+        repo: "https://github.com/CleverProgrammers/pwj-netflix-clone.git"
+        dest: "/var/www/html"
+
+
+ANSIBLE GALAXY:
+it is used to store roles on internet.
+we can downlaod others roles and use it.
+
+ansible-galaxy search java
+ansible-galaxy install artemv.java
+ansible-galaxy search --author artemv
