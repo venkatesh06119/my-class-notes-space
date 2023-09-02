@@ -1,0 +1,718 @@
+DAY-01:
+
+MONOLITHIC:
+SINGLE=APPLICATION, SERVER AND DATABASE &  MULTIPLE=SERVICES
+MICROSERVICES:
+MULTIPLE=SERVICES, SERVERS AND DATABASE &  SINGLE=APPLICATION
+
+WHY ?
+1. IF SOME THING WRONG WITH ONE SERVICE WE NEED TO STOP ENTIRE APPLICATION
+THEN ALL OTHER SERVIVCES ALSO STOPPED.
+2. DB ISSUES
+
+SERVER = CONTAINERS
+
+
+CONATINERS:
+Its a light weighted used to create,manage & deploy applications.
+it will not have os/packages, we need to install them from images.
+to crate container we are using the docker.
+
+DOCKER:
+it is a tool used to create containers.
+written on go lang.
+release: 2013
+written: solomen hykes and sebastian phal.
+its a free, opensource tool and platform independent.
+it helps to containarize the application.
+
+Containarization:
+packing application(pubg) along with its dependencies(maps).
+os level of virtualization.
+
+ARCHITECURE:
+
+Client --- > daemon -- > registry
+you --- > mom --- > dad
+
+CLIENT: it will interact with us. takes commands and excutes 
+HOST: where we install docker (windows, linux, macos)
+DAEMON: A background service which manages all the docker componets 
+REGISTRY: its a central platform which contains all the images
+
+image (os/packages) --- > yes --- > container
+
+INSTALLATION:
+yum install docker -y
+systemctl start docker
+systemctl status docker
+docker version
+
+
+docker images			: to see images
+docker pull amamzonlinux	: to download image
+docker run -it --name cont1 amamzonlinux: to create a container from amamzonlinux image
+
+yum install git maven httpd -y
+
+ctrl p q	: to exit from container
+docker container ls : to show list of container (docker ps -a)
+docker start cont_name : to start contianer
+docker attach cont_name : to go inside contianer
+docker stop cont_name : to start contianer
+
+HISTORY:
+
+ 1  yum install docker -y
+    2  docker version
+    3  systemctl start docker
+    4  docker version
+    5  docker images
+    6  docker pull amazonlinux
+    7  docker image
+    8  docker images
+    9  docker run -it --name cont1 amazonlinux
+   10  docker ps -a
+   11  docker container ls
+   12  docker start cont1
+   13  docker attach cont1
+   14  docker ps -a
+   15  docker stop cont1
+
+=================================================================
+
+day-02: custom images, Dockerfile, Deployment
+
+
+CUSTOM IMAGES:
+maual method:
+docker run -it --name cont1 ubuntu
+apt update -y
+apt install apache2 maven tree -y
+touch file{1..10}
+ctrl p q : to exit
+
+to create image form cont: docker commit cont1 image_name
+
+docker run -it --name cont1 image_name
+verify all the files and pkgs
+
+
+automation:
+DOCKER FILE:
+its an automation way of creating out custom images.
+components in docker file is always captial.
+in Dockerfile D is capital
+
+
+FROM: used for base image
+RUN: used to run commands (during image creation)
+CMD: used to run commands (during container creation)
+ENTRYPOINT: more priority than cmd.
+COPY: used to copy local files
+ADD: used to copy files from internet.
+WORKDIR: used to set default dir for cont
+LABEL: used to attach labels (name, email ----)
+ENV: used to set env variables (work inside cont)
+ARGS: used to set variables (work outside cont)
+VOLUME: used to attach volume to cont
+EXPOSE: to give port numbers
+
+TO RUN DOCKERFILE: docker build -t image:v1 .
+TO CREATE CONT: docker run -it --name cont1 image:v1 
+
+docker inspect cont_name : to show full info of container
+docker inspect cont6 | grep -i author
+
+EX-1:
+
+FROM ubuntu
+RUN apt update -y
+RUN apt install apache2 maven tree -y
+RUN touch file{1..10}
+
+EX-2:
+
+FROM ubuntu
+RUN apt update -y
+RUN apt install apache2 maven tree -y
+RUN touch file{1..10}
+CMD apt install mysql-server -y
+
+
+EX-3:
+
+FROM ubuntu
+RUN apt update -y
+RUN apt install apache2 maven tree -y
+RUN touch file{1..10}
+COPY raham.txt /tmp
+ADD http://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz /tmp
+
+
+EX-4:
+FROM ubuntu
+RUN apt update -y
+RUN apt install apache2 maven tree -y
+RUN touch file{1..10}
+COPY raham.txt /tmp
+ADD http://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz /tmp
+WORKDIR /tmp
+LABEL author rahamshaik
+ENV client swiggy
+ENV server Prod
+
+
+NETFLIX DEPLOYMENT:
+yum install git -y
+git clone https://github.com/CleverProgrammers/pwj-netflix-clone.git
+cd pwj-netflix-clone/
+vim Dockerfile
+
+FROM ubuntu
+RUN apt-get update -y
+RUN apt-get install apache2 -y
+COPY . /var/www/html/
+CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+
+
+docker build -t netflix:v1 .
+docker run -itd --name netflix1 -p 81:80 netflix:v1
+
+HISTORY:
+
+ 1  yum update -y
+    2  yum install dockrer -y
+    3  yum install docker -y
+    4  service docker start
+    5  service docker status
+    6  docker version
+    7  docker pull ubuntu
+    8  docker images\
+    9  docker ps
+   10  docker attach cont1
+   11  docker ps
+   12  docker images
+   13  docker commit cont1 raham:v1
+   14  docker images
+   15  docker run -it --name cont2 raham:v1
+   16  docker ps
+   17  vim Dockerfile
+   18  cat Dockerfile
+   19  docker build -t raham:v2 .
+   20  docker images
+   21  docker run -it --name cont3 raham:v2
+   22  vim Dockerfile
+   23  docker build -t raham:v3 .
+   24  docker run -it --name cont4 raham:v3
+   25  vim raham.txt
+   26  ll
+   27  vim Dockerfile
+   28  docker build -t raham:v4 .
+   29  docker run -it --name cont5 raham:v4
+   30  vim Dockerfile
+   31  docker build -t raham:v5 .
+   32  docker run -it --name cont6 raham:v5
+   33  docker inspect cont6
+   34  docker inspect cont6 | grep -i label
+   35  docker inspect cont6 | grep -i labels
+   36  docker inspect cont6 | grep -i author
+   37  vim Dockerfile
+   38  docker build -t raham:v6 .
+   39  docker run -it --name cont7 raham:v6
+   40  yum install git -y
+   41  git clone https://github.com/CleverProgrammers/pwj-netflix-clone.git
+   42  cd pwj-netflix-clone/
+   43  ll
+   44  vim Dockerfile
+   45  docker build -t netflix:v1 .
+   46  docker run -itd --name netflix netflix:v1
+   47  docker run -itd --name netflix1 -p 81:80 netflix:v1
+   48  history
+============================================================================
+
+VOLUMES:
+it is a folder inside the container.
+volume store the data in container.
+we can share volume from one container to another conatiner.
+single volume can be shared to multiple containers.
+at a time we can share only one volume.
+
+
+1. DOCKER FILE
+
+FROM ubuntu
+VOLUME ["/vol1"]
+
+
+docker build -t raham:v1 .
+docker run -it --name cont1 raham:v1
+cd /vol1
+touch file{1..10}
+
+to share the vol: docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
+
+
+2. FROM CLI:
+
+docker run -it --name cont3 -v /vol2 ubuntu
+cd /vol2
+touch file{1..10}
+to share the vol: docker run -it --name cont4 --volumes-from cont3 --privileged=true ubuntu
+
+
+3. MOUNTING:
+
+docker volume create vol3
+docker volume ls
+docker volume inspect vol3
+docker volume rm vol4
+
+cd /var/lib/docker/volumes/vol3/_data
+touch file{1..10}
+
+docker run -it --name cont5 --mount source=vol3,destination=/abc ubuntu
+cd /vol3
+touch file{11..20}
+exit
+
+cp * /root	: to copy files from volume path to local path
+
+NOTE: we cant delete attached volume.
+
+======================================
+docker system commands:
+docker system df	: to check the size of docker components
+docker system df -v	: to check the size of docker components individaully
+
+JENKINS SETUP ON DOCKER:
+docker run -it --name jenkisnci -p 8080:8080 jenkins/jenkins:lts
+
+
+
+HISTORY:
+
+1  vim Dockerfile
+    2  docker build -t raham:v1 .
+    3  yum install docker -y && systemctl start docker
+    4  docker build -t raham:v1 .
+    5  docker run -it --name cont1 raham:v1 
+    6  docker ps 
+    7  docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
+    8  docker attach cont1
+    9  docker run -it --name cont3 -v /vol2 ubuntu
+   10  docker run -it --name cont4 --volumes-from cont3 --privileged=true ubuntu 
+   11  docker volume create vol3
+   12  docker volume ls
+   13  docker volume inspect vol3
+   14  cd /var/lib/docker/volumes/vol3/_data
+   15  touch python{1..5}
+   16  ll
+   17  docker run -it --name cont5 --mount source=vol3,dest=/vol3 ubuntu
+   18  docker run -it --name cont5 --mount source=vol3 dest=/vol3 ubuntu
+   19  docker run -it --name cont5 --mount "source=vol3,dest=/vol3" ubuntu
+   20  docker run -it --name cont5 --mount "src=vol3,dest=/vol3" ubuntu
+   21  docker run -it --name cont5 --mount "src=vol3 dest=/vol3" ubuntu
+   22  docker run -it --name cont5 --mount "src=/vol3 dest=/vol3" ubuntu
+   23  docker run -it --name cont5 --mount source=/vol3,destination=/vol3 ubuntu
+   24  docker run -it --name cont5 --mount source=vol3,destination=/vol3 ubuntu
+   25  ll
+   26  cp * /root/
+   27  ls
+   28  cd /root/
+   29  ll
+   30  rm -rf p*
+   31  ls
+   32  cd /home/
+   33  ls
+   34  touch java{1..10}
+   35  ll
+   36  docker inspect vol3
+   37  cp * /var/lib/docker/volumes/vol3/_data
+   38  cp * /var/lib/docker/volumes/vol3/_data -R
+   39  cd /var/lib/docker/volumes/vol3/_data
+   40  ls
+   41  docker attach cont5
+   42  cd /root/
+   43  touch php{1..10}
+   44  cp * /var/lib/docker/volumes/vol3/_data
+   45  cd /var/lib/docker/volumes/vol3/_data
+   46  ls
+   47  docker attach cont5
+   48  docker volume create vol4
+   49  docker inspect vol4
+   50  docker volume create vol4
+   51  docker volume ls
+   52  docker volume rm vol4
+   53  docker volume 
+   54  docker volume rm vol3
+   55  docker system -df
+   56  docker system -v
+   57  docker system df 
+   58  docker system df -v
+   59  docker system df --format json
+   60  docker system df --format=json
+   61  docker system df --format=yaml
+   62  docker system df --format
+   63  docker system df --help
+   64  docker system df --format string
+   65  docker system df --format "json"
+   66  docker run -it --name jenkisnci -p 8080:8080 jenkins/jenkins:lts
+   67  history
+========================================================================
+
+TO REMOVE ALL CONTS:
+STOP: docker stop $(docker ps -a -q)
+REMOVE: docker rm $(docker ps -a -q
+TO REMOVE ALL IMAGES:
+docker rmi -f $(docker images -q)
+
+Dockerfile:
+FROM ubuntu
+RUN apt-get update -y
+RUN apt-get install apache2 -y
+COPY index.html /var/www/html/
+CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+
+CODE FOR INDEX.HTML: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_form_icon
+
+docker build -t img:v1 .
+docker run -itd --name cont1 img:v1 
+
+DOCKER COMPOSE:
+its a tool used to create multiple containers together.
+inside containers we create services.
+its a text file with yaml fromat.
+yaml works on key-value pair.
+inside this file we can describe images, ports, volume, replicas and networks.
+Default file is: docker-compose.yml (or) compose.yml (yml=yaml)
+
+INSTALL:
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+ls /usr/local/bin/
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+
+
+
+version: '3.8'
+services:
+  movies:
+    image: raham:movies
+    ports:
+      - "81:80"
+  train:
+    image: raham:train
+    ports:
+      - "82:80"
+
+
+
+version: '3.8'
+services:
+  movies:
+    image: raham:movies
+    ports:
+      - "81:80"
+  train:
+    image: raham:train
+    ports:
+      - "82:80"
+  dth:
+    image: raham:dth
+    ports:
+      - "83:80"
+  recharge:
+    image: raham:recharge
+    ports:
+      - "84:80"
+
+
+docker-compose up -d	: to run containers on compose files 
+docker-compose stop	: to stop containers on compose file
+docker-compose start	: to start containers on compose file
+docker-compose pause	: to pause containers on compose file
+docker-compose unpause	: to unpause containers on compose file
+docker-compose down	: to delete containers on compose file
+docker-compose ps	: to list containers created from compose file
+docker-compose images	: to list images used on compose file
+docker-compose logs	: to show logs of compose
+
+CHANGING THE DEFAULT FILE:
+rename docker-compose file to raham.yml and run below command
+docker-compose -f raham.yml down
+
+
+DOCKERHUB:
+its a central repo where we can store images
+
+docker login
+docker tag image:v1 username/repo
+docker push username/repo
+
+docker tag raham:recharge laxmisrikar99/recharge
+docker push laxmisrikar99/recharge
+
+HISTORY:
+
+  68  docker images
+   69  docker ps -a
+   70  docker ps -a -q
+   71  docker stop $(docker ps -a -q)
+   72  docker rm $(docker ps -a -q)
+   73  docker ps -a
+   74* docker images
+   75  docker images
+   76  vim Dockerfile
+   77  vim index.html
+   78  docker build -t raham:movies .
+   79  docker run -it --name movies -p 81:80 raham:movies
+   80  docker ps -a
+   81  vim Dockerfile
+   82  docker rm 8260498a3f5d
+   83  docker run -it --name movies -p 81:80 raham:movies
+   84  docker ps -a
+   85  vim index.html
+   86  docker build -t raham:train .
+   87  docker run -itd --name train -p 82:80 raham:train
+   88  vim index.html
+   89  docker build -t raham:dth .
+   90  docker run -itd --name dth -p 83:80 raham:dth
+   91  vim index.html
+   92  docker build -t raham:recharge .
+   93  docker run -itd --name recharge -p 84:80 raham:recharge
+   94  sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   95  ls /usr/local/bin/
+   96  sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+   97  sudo chmod +x /usr/local/bin/docker-compose
+   98  docker-compose version
+   99  vim docker-compose.yml
+  100  docker version
+  101  vim docker-compose.yml
+  102  docker stop $(docker ps -a -q)
+  103  docker rm $(docker ps -a -q)
+  104  docker ps -a
+  105  cat docker-compose.yml
+  106  docker images
+  107  docker-compose up -d
+  108  docker ps -a
+  109  vim docker-compose.yml
+  110  cat docker-compose.yml
+  111  docker-compose up -d
+  112  docker ps -a
+  113  cat Dockerfile
+  114  cat docker-compose.yml
+  115  docker ps -a
+  116  docker-compose stop
+  117  docker ps -a
+  118  docker-compose start
+  119  docker ps -a
+  120  docker-compose pause
+  121  docker ps -a
+  122  docker-compose unpause
+  123  docker ps -a
+  124  docker-compose down
+  125  docker ps -a
+  126  docker-compose up -d
+  127  docker ps -a
+  128  docker run -itd --name cont1 ubuntu
+  129  docker run -itd --name cont2 ubuntu
+  130  docker run -itd --name cont3 ubuntu
+  131  docker ps -a
+  132  docker-compose ps
+  133  docker images
+  134  docker-compose images
+  135  docker-compose logs
+  136  docker-compose down
+  137  mv docker-compose.yml compose.yml
+  138  ll
+  139  rm -rf php*
+  140  ll
+  141  docker-compose up -d
+  142  mv compose.yml raham.yml
+  143  docker-compose down
+  144  docker-compose down -c raham.yml
+  145  docker-compose down compose.yml -c raham.yml
+  146  docker-compose compose.yml -c raham.yml down
+  147  docker-compose -f raham.yml down
+  148  docker images
+  149  docker tag raham:movie laxmisrikar99
+  150  /
+  151  docker tag raham:movies laxmisrikar99/movies
+  152  docker images
+  153  docker pus laxmisrikar99/movies
+  154  docker push laxmisrikar99/movies
+  155  docker login
+  156  docker push laxmisrikar99/movies
+  157  docker images
+  158  docker tag raham:train laxmisrikar99/tarin
+  159  docker push laxmisrikar99/tarin
+  160  docker tag raham:dth laxmisrikar99/dth
+  161  docker push laxmisrikar99/dth
+  162  docker tag raham:recharge laxmisrikar99/recharge
+  163  docker push laxmisrikar99/recharge
+  164  docker rmi -f $(docker images -q)
+  165  docker images
+  166  docker stop $(docker ps -a -q)
+  167  docker rm $(docker ps -a -q)
+  168  docker images
+  169  docker ps -a
+  170  docker run -itd --name dth -p 81:80 laxmisrikar99/dth:latest
+  171  docker ps -a
+  172  history
+
+=======================================================================================
+
+DOCKER SWARM:
+Is an orchestration service.
+we use to manage multiple containers.
+we can create multiple containers on multiple servers.
+if a container is not working on server-1 we can access form server-2.
+
+we need to create master and worker nodes.
+operations we perform on master node.
+from master node the conatiners are distributed to worker nodes.
+master node is connection to workernode with token.
+we need to install docker engine.
+
+ADVANTGAGES:
+1. HIGH AVAILABILTY
+2. SELF HEALING
+3. REPLICAS
+
+working:
+create 3 server and install & start docker.
+note: give all traffic
+
+
+sudo -i
+hostnamectl set-hostname manager/worker-1/worker-2/
+sudo -i
+
+yum install docker -y
+systemctl start docker
+systemctl status docker
+
+Generate a token to connect with worker nodes: (run this on manager)
+docker swarm init --advertise-addr 172.31.33.115 (private-ip manager)
+
+copy the token to worker nodes:
+
+verify: docker node ls
+
+service: 
+a feature of application.
+with the help of service we can create conatiners.
+replicas: copy of a container
+
+docker service create --name movies --replicas 3 --publish 82:80 laxmisrikar99/movies:latest
+
+docker service ls		: TO list services
+docker service ps dth		: list the dth containers with nodes as well
+docker service scale dth=10	: to scale the containers
+docker service scale dth=5	: to scale the containers
+docker service inspect dth	: to show complete info
+docker service logs dth		: to show complete events
+docker service rollback dth	: to go back to previous stage
+docker service rm dth		: to remove the service
+
+
+CLUSTER ACTIVES:
+docker swarm leave   : to detach worker node from cluster (execute on worker)
+to attach node again : copy the token on worker node again
+docker node rm node_id: to remove permanently (execute on manager)
+to generate toke     : docker swarm join-token manager (execute on manager)
+
+
+=================================================
+
+DOCKER NETWORK: its used to connect our containers.
+
+
+BRIDGE NETWORK: to communicate container running on same server.
+HOST NETWORK: uses host ip as containers.
+NONE NETWORK: containers will not expose here.
+OVERLAY NETWORK: to communicate containers running on multiple server.
+
+docker network create raham	: to create network
+docker network ls 		: to list networks
+docker network connect raham cont3: to connect cont3 with raham n/w
+docker network connect raham cont3: to discommect cont3 with raham n/w
+docker network rm raham	: to remove raham n/w
+
+
+TO CHECK COMMINICATION:
+docker attach cont1
+apt update -y
+apt install iputils-ping -y
+ping private-ip of cont2 (get ip by using inspect command)
+
+HISTORY:
+
+
+  1  yum install docker -y
+    2  systemctl start docker
+    3  systemctl status docker
+    4  docker swarm init --advertise-addr 172.31.33.115
+    5  docker node ls
+    6  docker swarm init --advertise-addr 172.31.33.115
+    7  docker node ls
+    8* docker service create --name dth --replicas 3 --publish 81:80 laxmisrikar99/dth:lat
+    9  docker service create --name movies --replicas 3 --publish 82:80 laxmisrikar99/movies:latest
+   10  docker service ls
+   11  docker service ps dth
+   12  docker service scale dth=10
+   13  docker service ps dth
+   14  docker service scale dth=5
+   15  docker service ps dth
+   16  docker service
+   17  docker service inspect dth
+   18  docker service stop dth
+   19  docker service logs dth
+   20  docker service rollback dth
+   21  docker service ps dth
+   22  docker service rollback dth
+   23  docker service rm dth
+   24  docker service ps dth
+   25  docker service ls
+   26  docker node ls
+   27  docker service ps movies
+   28  docker service ls
+   29  docker node ls
+   30  docker noder rm vp9qx7u1xozbwt3mdypee1h60
+   31  docker node rm vp9qx7u1xozbwt3mdypee1h60
+   32  docker node ls
+   33  docker node rm okt0og75ogm69swawyw0x9pfr
+   34  docker node ls
+   35  docker node rm okt0og75ogm69swawyw0x9pfr
+   36  docker node ls
+   37  docker swarm join-token manager
+   38  docker node ls
+   39  docker network ls
+   40  docker service rm movies
+   41  docker ps -a
+   42  docker service ls
+   43  docker ps -a
+   44  docker network create raham
+   45  docker network ls
+   46  docker run -itd --name cont1 ubuntu
+   47  docker run -itd --name cont2 ubuntu
+   48  docker ps -a
+   51  docker network connect raham cont1
+   52  docker network inspect raham
+   53  docker network connect raham cont2
+   54  docker network inspect raham
+   55  docker run -itd --name cont3 ubuntu
+   56  docker network connect raham cont3
+   57  docker network inspect raham
+   58  docker attach cont1
+   59  docker attach cont2
+   60  docker network disconnect raham cont3
+   61  docker network inspect raham
+   62  docker network disconnect raham cont2
+   63  docker network inspect raham
+   64  docker network rm raham
+   65  docker network disconnect raham cont1
+   66  docker network rm raham
+   67  history
