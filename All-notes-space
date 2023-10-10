@@ -1,1 +1,833 @@
 hi chanti
+
+
+LINUX: Free and Open-source OS
+OS: Operating system -- > communication blw user & system.
+
+TYPES OF OS:
+1. WINDOWS
+2. LINUX
+3. MAC OS
+
+LINUX COMPONENTS:
+
+1. KERNEL: Manages hardware components (CPU, MEMORY, etc --)
+           The lowest level of OS.
+
+2. DAEMON: Manage the Background Service (Lights, Sounds, schedule)
+           While starting the system.
+
+3. SHELL: Manage the User Inputs (Command, Script, programs)
+          Takes input from the user and executes and gives the output.
+           
+
+LINUX OS FLAVOURS/DISTRIBUTIONS:
+
+IPHONE: 14, 14+, 14 PRO, 14 PRO MAX,
+VERSIONS: 14, 13, 12, 11
+
+MAIN:
+RedHat
+Ubuntu  (75%)
+Amazon Linux
+
+MODES:
+1. GUI: Its having the Dashboard
+2. CLI: Command line interface (Works with commands only)
+
+HISTORY:
+1991 -- > Linus Torvalds -- > student from finland.
+1991 -- > Want to create an OS that works like UNIX.
+LINUX is Written in C Programming. (1972)
+Firstly he wanted to name it as 'Freax' but later it became 'Linux'.
+1992 -- > Linxu's initial version was released. 
+TOTAL PROGRAMMING LANGUAGES: 700 +
+
+OPEN SOURCE:
+It is free no need to pay money.
+It is available publically.
+We can change the code.
+we can give a copy of the code to other people.
+
+ADVANTAGES:
+It's free and open-source.
+Multi-user based.
+Fewer Bugs.
+Better Performance.
+It can be used for all programming languages.
+It will hang very rarely.
+
+===========================================================================
+
+DAY-02: SERVER & COMMANDS
+
+MOBAXTERM LINK: https://download.mobatek.net/2312023031823706/MobaXterm_Portable_v23.1.zip
+
+NOTE: Go to the path where you have keypair
+CONNECT: SELECT THE SERVER -- > CONNECT -- > SSH CLINET -- > COPY TO TERMINAL
+PASTE: 1. RIGHT CLICK 2. SHIFT + INSERT
+
+
+COMMANDS:
+ec2-user: default user       root: admin
+*	: refers all in linux
+
+
+sudo -i		: switch to root user form ec2-user
+clear/ctrl + l	: to clear the screen
+touch file1	: to create a file
+ll/ls		: to list the files
+ll -a / ls -a	: to list the hidden files
+pwd		: to show the present working directory
+cat file1	: to show the content in a file
+more file1	: to show the content in a file
+cat>file1	: to insert the content
+enter, ctrl d	: to save the content
+cat>>file1	: to insert the content more than one time.
+
+cp file1 file2	: to copy the content from file1 to file2
+mv file1 file5	: to rename file1 to file5
+rm file2	: to remove file2
+rm file4 -f	: to remove file4 forcefully
+rm * -f		: to remove all files forcefully
+
+touch java{1..5}: to create series of files
+rm j* -f	: to remove all the files starting with j
+wc file1	: to see number of lines, words & characters.
+
+head file2	: to print top 10 lines
+head -7 file2	: to print top 7 lines
+head -5 file2	: to print top 5 lines
+
+tail file2	: to print bottom 10 lines
+tail -7 file2	: to print bottom 7 lines
+tail -5 file2	: to print bottom 5 lines
+sed -n '6,16p' file2 : to print form line numbers 6 to 16
+
+FOLDERS = DIRECTORIES
+
+mdkir dir1	: to create a folder
+cd dir1		: to go inside the directory
+cd ..		: to go back one directory
+rmdir dir1	: to remove a directory
+
+echo "hai raham" > file3
+===============================================================
+
+
+DAY-03:
+
+STATIC: We can't modify
+DYNAMIC: We can mofify
+
+VI/VIM EDITOR: Used to edit files and insert content.
+i: used to modify/insert content
+esc: to get out from insert mode
+
+3. SAVE MODE:
+
+:w	: to save 
+:q	: to quit 
+:wq	: to save & quit
+!	: forcefully
+
+2. INSERT MODE:
+
+A	: End of line
+I	: Starting of line
+O	: Create new line above existing line
+o	: Create new line below existing line
+
+1. COMMAND MODE:
+
+yy	: copies single line
+p	: paste single line
+dd	: delete single line
+u	: undo
+
+nyy	: copies n lines
+np	: pastes n line
+ndd	: delete n lines
+nu	: undo n times
+
+gg	: top of file
+shift+g	: bottom of file
+:15	: to go to line 15
+:set number: print lines inside the file
+
+===========================================================================================================
+
+HARDWARE:
+
+cat /proc/meminfo	: to show memory information
+lsmem			: to show memory information
+cat /proc/cpuinfo	: to show cpu information
+lscpu			: to show cpu information
+cat /etc/os-release	: to print flavoure
+
+
+fdisk -l		: to show the ebs volume info
+lsblk			: to show the ebs volume info
+
+df			: to show the mount point
+df -m			: to show the mount point in mb
+
+free			: to show how much ram is available
+free -m			: to show how much ram is available
+
+yum install lshw -y	: to install the package 
+lshw			: to show the hardware information.
+====================================================================================================================
+
+
+USERS: 
+ec2-user: he is the default user.
+
+root: he is the admin, he will have all permissions.
+superuser: 
+he is a normal user created by root user.
+normal user -- > visudo -- > super user
+
+useradd raham: to create a user
+cat /etc/passwd: to see the users list.
+
+user -- > GROUP & FOLDER
+
+cat /etc/group: to see the groups list.
+ls /home: to show user folder on home 
+id raham: to show the user info
+passwd raham: to assign password for user
+
+NOTE: in linux password will not be visible.
+password -- > more than 8 char. 
+username should not be given as password.
+
+To create super user:
+1. create user (useradd raham)
+2. password (passwd raham)
+3. visudo -- > 100 -- > yy & p -- > root=raham
+
+su - rajesh : to login to super user
+
+NOTE: In linux if you are on non root use sudo command 
+
+
+root -- > normal -- > visudo -- > super user 
+
+logout or ctrl d used to exit from super user.
+
+
+=============================================================
+
+-rw-r--r-- 1 root root 0 Jun  8 16:02 file1
+
+
+TYPE OF FILES:
+-	: Regular file
+b	: Blocked file
+c	: Charcter file
+d	: Directory
+l	: link file
+
+PERMISSION:
+
+rw-r--r--
+r	: read		: 4
+w	: write		: 2
+x	: executable	: 1
+
+user	: rw-	: 4+2+0	: 6
+group	: r--	: 4+0+0	: 4
+others	: r--	: 4+0+0	: 4
+
+
+chmod 777 file1
+chmod 666 file2
+
+1	: acl -- > access control list
+
+
+chown raham file1: to make raham as owner to file1
+chgrp raham file1: to make raham as group to file1
+chown raham:raham file2 : to make raham user&group for file2
+chown rajesh:raham file1: rajesh as user & raham as group
+
+
+groupadd devops	: to create devops group
+usermod -aG devops raham : to add raham user to devops group
+usermod -aG aws raham : to add raham user to aws group
+
+gpasswd --delete raham devops : to remove raham user form devops group
+userdel raham : to delete raham user
+
+=======================================================================================================
+
+DAY-05:
+
+
+GREP : Global Regular Expression Print
+to search for a particular word
+
+grep is file1		: to search word is on file1
+grep IS file1 -i	: to avoid the case sensitive
+grep IS file1 -i -v	: to avoid the line which is having word is
+cat file1 | grep is	: to search word is on file1
+cat file1 | grep IS -i	: to avoid the case sensitive
+cat file1 | grep IS -iv : to avoid the line which is having word is
+
+| : is pipe sysmbol -- > to work with pipe we need to have 2 commands
+here 1 st command output will be input of 2 nd command.
+
+lscpu | grep cpu -i
+lsmem | grep memory -i
+dmesg | grep image -i
+
+
+SED: Stream Editor -- > to replace words in a file.
+
+%s/is/abc/ -- > to replace is with abc
+sed '3c/abc/' file1  -- > to replce 3rd line in a file
+sed 's/linux/unix/' file1-- > single word replace
+sed 's/linux/unix/; s/session/class/' file1 -- > multi word replace
+cat file1 -n -- > to print line numbers in a file
+sed '=' file1 -- > to print line numbers in a file
+sed -n '5,13p' file1 -- > to print line 5 to 13
+sed -e '5,13p' file1 -- > to print line 5 to 13 double times
+
+NETWORKING:
+ip addr
+ip addr show
+hostname -i
+ifconfig          -- > all the 4 commands used to show ip address
+
+ping google.com -- > to get response form server
+ping -c 4 google.com
+netstat   --- > to show active internet connections
+ps  -- > to check the process
+kill -9 32555 -- > to kill a process
+ps aux -- > to list process in ids
+
+===========================================================================
+
+LINUX DIRECTORY SYSTEM:
+FHS 
+
+
+bin	: it stores all the binary files and also it stores the commands that had been executed by the user.
+sbin	: it stores the commands that had been executed by the super user.
+boot	: it contains boot images & boot files.
+dev	: it contains all the device files
+etc	: it contains all the host specific system configuration files.
+lib	: it contains all the library files of the system.
+lib64	: it contains all the library files of the system of 64 bit.
+mnt	: it is used for the mounting purpose.
+opt	: it stores all the file details of the 3 rd party when it installed.
+proc	: it is used to see all the processing related files (Hardware details).
+srv	: it stores all the service related information provided by system.
+sys	: it stores any new changes that obtained while changing Hardware.
+tmp	: it stores temperory files and have access to all.
+usr	: it contains local system files which are continuing with the old system architecture.
+var	: it stores all the system services.
+
+===================================================================================================
+
+
+DAY-01: INTRO, BASIC COMMANDS
+
+STAGES OF GIT:
+
+1. WORKING DIRECTORY: we write the source code.
+2. STAGING AREA: We can track the code. is also called as draft space.
+3. REPO: we can store our tracked code. (.git is your local repo)
+
+
+CREATE A SERVER
+INSTALLATION:
+
+mkdir swiggy  (mkdir is to create a folder)
+cd swiggy  (cd is to go inside folder)
+yum install git -y
+git init  (to get .git folder)
+
+
+touch file2	: create a file
+git status	: to check the file is tracking or not
+git add file2	: to track the file2
+git commit -m "abc" file2: to store the tracked file2
+git log		: to show the commits 
+git log --oneline : to show the commits on single line
+
+HISTORY:
+
+  1  ll
+    2  mkdir swiggy
+    3  cd swiggy/
+    4  yum install git -y
+    5  ll
+    6  ll -a
+    7  git init
+    8  ll -a
+    9  vim file1
+   10  ll
+   11  git status
+   12  git add file1
+   13  git status
+   14  git commit -m "commit-1" file1
+   15  git status
+   16  touch file2
+   17  git status
+   18  git add file2
+   19  git status
+   20  git commit -m "commit-2" file2
+   21  git status
+   22  ll
+   23  git log
+   24  git log --oneline
+   25  touch file3
+   26  git status
+   27  git add file3
+   28  git status
+   29  git commit -m "commit-3" file3
+   30  git log
+   31  history
+
+=================================================
+
+DAY-02: BRANCHES, MERGE REBASE
+
+BRANCH:
+Branch means an individual line of development.
+we can develop the code separately.
+Each feature on the application was initially developed on an individual branch only.
+the default branch is master.
+we need to do initial commit for the master branch.
+
+
+COMMANDS:
+
+git branch		: to list the branches
+git branch branch_name	: to create the branch
+git checkout branch_name: to switch to another branch
+git checkout -b branch_name: to create and switch at same time
+git branch -D branch_name: to delete the branch
+git branch -m old new 	: to rename a branch
+
+MERGE: add files in one branch to another branch.
+
+git checkout master
+git merge photos
+
+REBASE: add files in one branch to another branch.
+
+git checkout master
+git rebase photos
+
+HISTORY:
+ 1  mkdir swiggy
+    2  cd swiggy/
+    3  yum install git -y
+    4  ll -a
+    5  git init
+    6  ll -a
+    7  git branch
+    8  touch index.html
+    9  git status
+   10  git add index.html
+   11  git commit -m "commit-1" index.html
+   12  git branch
+   13  git branch photos
+   14  git branch
+   15  git checkout photos
+   16  git branch
+   17  touch photos{1..5}
+   18  git status
+   19  git add *
+   20  git commit -m "dev-1 commits" *
+   21  ll
+   22  git branch
+   23  git branch reels
+   24  git branch
+   25  git checkout reels
+   26  ll
+   27  touhc reels{1..5}
+   28  touch reels{1..5}
+   29  ll
+   30  git status
+   31  git add *
+   32  git status
+   33  git commit -m "dev-2 commits" *
+   34  git branch
+   35  git checkout -b vcalls
+   36  git branch
+   37  ll
+   38  touch vcalls{1..5}
+   39  git add *
+   40  git commit -m "dev-3 commits" *
+   41  ll
+   42  git branch
+   43  git checkout -b promotions
+   44  touch promotions{1..5}
+   45  git add *
+   46  git commit -m "dev-4 commits" *
+   47  git branch
+   48  git checkout master
+   49  ll
+   50  git merge photos
+   51  ll
+   52  git merge reels
+   53  ll
+   54  git rebase vcalls
+   55  ll
+   56  git rebase promotions
+   57  ll
+   58  git branch
+   59  ll
+   60  git branch
+   61  git branch -D vcalls
+   62  git branch
+   63  git branch -D reels
+   64  git branch
+   65  git branch -m photos abc
+   66  git branch
+   67  git branch -m promotions def
+   68  git branch
+   69  ll
+   70  history
+
+========================================
+
+DAY-03:
+
+GITHUB:
+its a place where we can store code on internet.
+everyone can access the code.
+daily we can do push and pull activites.
+
+
+git remote add origin https://github.com/mohammedowais641/instagram.git
+
+github removed password option in aug 2021, from then we are using tokens.
+Token will be visible only once.
+
+
+Settings -- > Developer Settings -- > personal access token -- > classic -- > generate tokne -- > classic -- > 
+
+
+
+GIT PUSH: To send files from local (.git) to remote/central (GitHub)
+git push origin branch_name
+
+
+GIT PUSH: To receive files from central (GitHub) to local (.git)
+git pull origin branch_name
+
+
+HISTORY:
+  1  mkdir instagram
+    2  cd instagram/
+    3  yum install git -y
+    4  git init
+    5  ll -a
+    6  touch index.html
+    7  git add index.html
+    8  git commit -m "commit-1" index.html
+    9  git branch
+   10  git branch photos
+   11  git branch
+   12  git checkout photos
+   13  git branch
+   14  touch photos{1..5}
+   15  git add *
+   16  git commit -m "dev-1 commits" *
+   17  git checkout -b reels
+   18  git branch
+   19  touch reels{1..5}
+   20  git add *
+   21  git commit -m "dev-2 commits" *
+   22  ll
+   23  git checkout -b vcalls
+   24  git branch
+   25  touch  vcalss{1..5}
+   26  git add *
+   27  git commit -m "dev-3 commits"
+   28  git branch
+   29  git checkout photos
+   30  ll
+   31  git checkout -b promotions
+   32  ll
+   33  touch promotions{1..5}
+   34  git add *
+   35  git commit -m "dev-4 commits"
+   36  git branch
+   37  git checkout master
+   38  ll
+   39  git merge photos
+   40  git merge reels
+   41  ll
+   42  git rebase vcalls
+   43  ll
+   44  git rebase promotions
+   45  ll
+   46  git branch
+   47  git remote add origin https://github.com/mohammedowais641/instagram.git
+   48  ls -a
+   49  git branch
+   50  git push origin photos
+   51  git push origin reels
+   52  git push origin vcalls
+   53  git checkout promotions
+   54  ll
+   55  git push origin promotions
+   56  git branch
+   57  ll
+   58  git pull origin promotions
+   59  cat index.html
+   60  git pull origin promotions
+   61  cat index.html
+   62  history
+   63 abcd
+   64  xyz
+===========================================================================
+DAY-04:
+
+MERGE CONFLICTS:
+WHEN WE MERGE 2 DIFFERENT BRANCHES WITH COMMON FILES WITH DIFFERENT CONTENT CONFLICTS WILL OCCUR.
+WE NEED TO RESOLVE THESE CONFICTS MANUALLY.
+
+
+
+GIT CLONE: GETTING THE REPOSITORY TO LOCAL 
+GIT FORK: GETTING THE REPOSITORY TO GITHUB
+
+CLONE VS PULL
+REPOSITORY: CLONE 
+FILE: PULL 
+
+FETCH VS PULL:
+To get the difference in files : PULL
+To show the difference in files: FETCH
+
+git pull origin master
+git fetch origin master
+
+CHERRY-PICK:
+To get specific files to one branch to another branch 
+
+
+COMMANDS:
+PUSH: git push origin master
+PULL: git pull origin master
+FETCH: git fecth 
+CLONE: git clone repo_url
+CHERRY-PICK: git cherry-pick commit_id
+
+HISTORY:
+
+=================================================================
+
+GIT STASH: used to hide the files which are not committed.
+
+git stash	: to stash the files
+git stash list	: to list the stashes
+git stash apply : to unstash the files
+git stash pop	: to remove last stash 
+git stash clear	: to remove all stash 
+
+
+GIT REVERT: To undo the merging blw branches.
+git revert branch_name 
+
+if we do revert on local it wont create a new branch
+if we do revert on github it will create a new branch
+to revert first we need to merge two branches
+
+revert -- > merge -- > branches -- > commit -- > .git
+
+GIT RESTORE: Used to undo the tracked files.
+git restore --staged file_name
+git rm --cached file_name
+
+GIT SHOW: to show the files for the commits.
+git show commit_id
+
+.gitignore: to ignore the files which we dont want.
+it wil not tarck and commit the files.
+
+SETTINGS:
+git config user.name "raham"
+git config user.email "raham@gamil.com"
+
+
+HISTORY:
+
+ 1  mkdir abcd
+    2  cd abcd/
+    3  yum install git -y
+    4  git init
+    5  git --version
+    6  git -v
+    7  git branch
+    8  touch index.html
+    9  git add index.html
+   10  git commit -m "commit-1" index.html
+   11  git log
+   12  touch java1
+   13  git status
+   14  git add java1
+   15  git status
+   16  ll
+   17  git stash
+   18  ll
+   19  git stash list
+   20  git stash apply
+   21  ll
+   22  git stash list
+   23  git stash pop
+   24  git stash list
+   25  ll
+   26  git stash
+   27  git stash list
+   28  ll
+   29  git stash apply
+   30  git stash list
+   31  git stash clear
+   32  git stash list
+   33  git add java1
+   34  git commit -m "java" java1
+   35  ll
+   36  git checkout -b branch2
+   37  ll
+   38  touch python{1..5}
+   39  git add *
+   40  git commit -m "python"
+   41  git branch
+   42  git checkout master
+   43  git merge branch2
+   44  ll
+   45  git revert branch2
+   46  ll
+   47  git branch
+   48  ll
+   49  git status
+   50  touch java2
+   51  git status
+   52  git add java2
+   53  git status
+   54  git restore --staged java2
+   55  git status
+   56  touch java3
+   57  git add java2 java3
+   58  git status
+   59  git restore --staged *
+   60  git status
+   61  git log
+   62  git log --oneline
+   63  git log --oneline -2
+   64  git show 0945167
+   65  git log
+   66  git show 335436555b74a91798cd78399bb614a9d16b5bc6
+   67  git show java1
+   68  git diff java1
+   69  ll
+   70  vim java1
+   71  git add java1
+   72  git commit -m "java-1 commit2"  java1
+   73  git diff java1
+   74  git show java1
+   75  git clone https://github.com/RAHAMSHAIK007/swiggy-project.git
+   76  git branch
+   77  ;;
+   78  ll
+   79  touch php{1..10}
+   80  ll
+   81  git status
+   82  vim .gitignore
+   83  git status
+   84  ll
+   85  git status
+   86  vim .gitignore
+   87  git status
+   88  ll
+   89  git add php1
+   90  git log
+   91  git config user.name "raham"
+   92  git config user.email "raham@gamil.com"
+   93  git log
+   94  git add java2
+   95  git commut -m "jav22" java
+   96  git commit -m "jav22" java2
+   97  git log
+   98  history
+
+
+===================================================================
+
+MAVEN : its a build tool.
+build means adding libs, dependencies to our code and running them.
+maven is build on java platform (1.8.0)
+maven is introduced by apache software foundations in 2004.
+it is free and opensource
+
+MAIN REQ:
+1. SOURCE CODE: The code used to develope application.
+2. POM.XML: it will have libs, dependencies, plugins of code.
+4. PLUGIN: A small software which automates our manual work.
+4. JAVA-1.8.0: maven built & supports java (1.8.0)
+
+POM: PROJECT OBJECT MODE / XML=EXTENSIBLE MARKUP LANGAUGE
+
+compile + test + artifacts
+
+raw: .java -- > compile -- > .class
+.class = executable files
+unit test: testing each feature of app individually
+artifact: final product (.jar, .war, .ear)
+
+
+.JAR: JAVA ARCHIVE : GROUP OF .CLASS FILES : BACKEND
+.WAR: WEB ARCHIVE  : HTML, CSS , JS + .JAR : FRONTEND + BACKEND
+.EAR: ENTERPRISE ARCHIVE: WAR + JAR
+
+
+SETUP:
+S-1: GET SOURCE CODE
+yum install git java-1.8.0-openjdk maven tree -y
+git clone https://github.com/devopsbyraham/jenkins-java-project.git
+
+S-2: MAVEN LIFECYCLE
+
+GOAL : its a command used to perform a task.
+
+mvn compile	: compile the source code
+mvn test 	: test the code
+mvn package	: to create jar file (current folder)
+mvn install	: to create jar file (.m2 folder)
+mvn deploy	: to create war file
+
+mvn clean packge : compile + test + Artifact (jar + war)
+
+
+MAVEN VS ANT:
+1. MAVEN HAS LIFE CYCLE BUT AND DONEST 
+2. MAVEN USES PLUGINS BUT ANT USE SCRIPTS
+3. PLUING IS REUSABLE BUT SCRIPTS CANT BE REUSABLE
+4. MAVEN IS DECLARATIVE BUT ANT IS PROCEDURAL
+
+    1  yum install git java-1.8.0-openjdk maven tree -y
+    2  git clone https://github.com/devopsbyraham/jenkins-java-project.git
+    3  ll
+    4  cd jenkins-java-project/
+    5  ll
+    6  mv src/ pom.xml ../
+    7  rm -rf *
+    8  ll
+    9  cd ..
+   10  ll
+   11  mvn compile
+   12  ll
+   13  tree
+   14  mvn test
+   15  mvn package
+   16  mvn install
+   17  mvn clean package
+==================================================
