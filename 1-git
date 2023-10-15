@@ -16,7 +16,7 @@ They save time and developers can fetch and create pull requests
 STAGES OF GIT:
 
 1. WORKING DIRECTORY: we write the source code.
-2. STAGING AREA: We can track the code. is also called as draft space.
+2. STAGING AREA: We can track the source code. is also called as draft space.
 3. REPO: we can store our tracked code. (.git is your local repo)
 
 
