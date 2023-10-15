@@ -1,6 +1,18 @@
 
 DAY-01: INTRO, BASIC COMMANDS
 
+what is git ? 
+
+it is a version control system and source code management
+it will maintain multiple versions of the same file
+it is free and open-source
+They can handle larger projects efficiently
+They save time and developers can fetch and create pull requests
+
+
+
+
+
 STAGES OF GIT:
 
 1. WORKING DIRECTORY: we write the source code.
